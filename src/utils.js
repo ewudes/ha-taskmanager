@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREDED: `beforeend`,
+  BEFOREEND: `beforeend`,
 };
 
 export const renderElement = (container, element, place) => {
@@ -10,7 +10,7 @@ export const renderElement = (container, element, place) => {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
       break;
-    case RenderPosition.BEFOREDED:
+    case RenderPosition.BEFOREEND:
       container.append(element);
       break;
   }
