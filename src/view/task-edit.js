@@ -13,17 +13,16 @@ const BLANK_TASK = {
     th: false,
     fr: false,
     sa: false,
-    su: false,
+    su: false
   },
   isArchive: false,
-  isFavorite: false,
+  isFavorite: false
 };
 
 const createTaskEditDateTemplate = (dueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${dueDate !== null ? `yes` : `no`}</span>
     </button>
-
     ${dueDate !== null ? `<fieldset class="card__date-deadline">
       <label class="card__input-deadline-wrap">
         <input
@@ -34,29 +33,29 @@ const createTaskEditDateTemplate = (dueDate) => {
           value="${formatTaskDueDate(dueDate)}"
         />
       </label>
-    </fieldset>` : ``}`;
+    </fieldset>` : ``}
+  `;
 };
 
 const createTaskEditRepeatingTemplate = (repeating) => {
   return `<button class="card__repeat-toggle" type="button">
-      repeat:<span class="card__repeat-status">${isTaskRepeating(repeating) ? `yes` : `no`}</span>
-    </button>
-
-    ${isTaskRepeating(repeating) ? `<fieldset class="card__repeat-days">
-      <div class="card__repeat-days-inner">
-        ${Object.entries(repeating).map(([day, repeat]) => `<input
-          class="visually-hidden card__repeat-day-input"
-          type="checkbox"
-          id="repeat-${day}"
-          name="repeat"
-          value="${day}"
-          ${repeat ? `checked` : ``}
-        />
-        <label class="card__repeat-day" for="repeat-${day}"
-          >${day}</label
-        >`).join(``)}
-      </div>
-    </fieldset>` : ``}`;
+    repeat:<span class="card__repeat-status">${isTaskRepeating(repeating) ? `yes` : `no`}</span>
+  </button>
+  ${isTaskRepeating(repeating) ? `<fieldset class="card__repeat-days">
+    <div class="card__repeat-days-inner">
+      ${Object.entries(repeating).map(([day, repeat]) => `<input
+        class="visually-hidden card__repeat-day-input"
+        type="checkbox"
+        id="repeat-${day}"
+        name="repeat"
+        value="${day}"
+        ${repeat ? `checked` : ``}
+      />
+      <label class="card__repeat-day" for="repeat-${day}"
+        >${day}</label
+      >`).join(``)}
+    </div>
+  </fieldset>` : ``}`;
 };
 
 const createTaskEditColorsTemplate = (currentColor) => {
@@ -83,7 +82,6 @@ const createTaskEditTemplate = (task) => {
   const repeatingClassName = isTaskRepeating(repeating)
     ? `card--repeat`
     : ``;
-
   const repeatingTemplate = createTaskEditRepeatingTemplate(repeating);
 
   const colorsTemplate = createTaskEditColorsTemplate(color);
@@ -145,7 +143,7 @@ export default class TaskEdit extends AbstractView {
     this._callback.formSubmit();
   }
 
-  setFormSubmitHandlar(callback) {
+  setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }

@@ -45,7 +45,7 @@ const renderTask = (taskListElement, task) => {
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  taskEditComponent.setFormSubmitHandlar(() => {
+  taskEditComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
@@ -61,7 +61,7 @@ const renderBoard = (boardContainer, boardTasks) => {
   render(boardComponent, taskListComponent, RenderPosition.BEFOREEND);
 
   if (boardTasks.every((task) => task.isArchive)) {
-    render(boardComponent.getElement(), new NoTaskView().getElement(), RenderPosition.AFTERBEGIN);
+    render(boardComponent, new NoTaskView(), RenderPosition.AFTERBEGIN);
     return;
   }
 
@@ -73,7 +73,9 @@ const renderBoard = (boardContainer, boardTasks) => {
 
   if (boardTasks.length > TASK_COUNT_PER_STEP) {
     let renderedTaskCount = TASK_COUNT_PER_STEP;
+
     const loadMoreButtonComponent = new LoadMoreButtonView();
+
     render(boardComponent, loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
     loadMoreButtonComponent.setClickHandler(() => {

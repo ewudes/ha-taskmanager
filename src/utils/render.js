@@ -2,7 +2,7 @@ import Abstract from "../view/abstract.js";
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
+  BEFOREEND: `beforeend`
 };
 
 export const render = (container, child, place) => {
@@ -33,10 +33,10 @@ export const renderTemplate = (container, template, place) => {
 };
 
 export const createElement = (template) => {
-  const newElement = document.createElement(`dev`);
-  newElement.innerHTML = template;
+  const newElement = document.createElement(`div`); // 1
+  newElement.innerHTML = template; // 2
 
-  return newElement.firstChild;
+  return newElement.firstChild; // 3
 };
 
 export const replace = (newChild, oldChild) => {
@@ -53,6 +53,8 @@ export const replace = (newChild, oldChild) => {
   if (parent === null || oldChild === null || newChild === null) {
     throw new Error(`Can't replace unexisting elements`);
   }
+
+  parent.replaceChild(newChild, oldChild);
 };
 
 export const remove = (component) => {

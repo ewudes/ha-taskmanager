@@ -6,7 +6,7 @@ const createFilterItemTemplate = (filter, isChecked) => {
   return (
     `<input
       type="radio"
-      id="filter_${name}"
+      id="filter__${name}"
       class="filter__input visually-hidden"
       name="filter"
       ${isChecked ? `checked` : ``}
