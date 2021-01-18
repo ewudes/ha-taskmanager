@@ -28,12 +28,22 @@ export default class Board {
     this._renderBoard();
   }
 
-  _renderTasks(from, to) {
+  _renderSort() {
+    render(this._boardComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderTask(task) {
 
   }
 
-  _renderNoTasks() {
+  _renderTasks(from, to) {
+    this._boardTasks
+      .slice(from, to)
+      .forEach((boardTask) => this._renderTask(boardTask));
+  }
 
+  _renderNoTasks() {
+    render(this._boardComponent, this._noTaskComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderLoadMoreButton() {
