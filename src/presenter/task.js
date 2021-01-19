@@ -1,6 +1,6 @@
 import TaskView from "../view/task.js";
 import TaskEditView from "../view/task-edit.js";
-import {render, RenderPosition, replace} from "../utils/render.js";
+import {render, RenderPosition, replace, remove} from "../utils/render.js";
 
 export default class Task {
   constructor(taskListContainer) {
@@ -17,13 +17,35 @@ export default class Task {
   init(task) {
     this._task = task;
 
+    const prevTaskCompenent = this._taskComponent;
+    const prevTaskEditComponent = this._taskEditComponenet;
+
     this._taskComponent = new TaskView(task);
     this._taskEditComponenet = new TaskEditView(task);
 
     this._taskComponent.setEditClickHandler(this._handleEditCLick);
     this._taskEditComponenet.setFormSubmitHandler(this._handleFormSubmit);
 
-    render(this._taskListContainer, this._taskComponent, RenderPosition.BEFOREEND);
+    if (prevTaskCompenent === null || prevTaskEditComponent === null) {
+      render(this._taskListContainer, this._taskComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._taskListContainer.getElement().contains(prevTaskCompenent.getElement())) {
+      replace(this._taskComponent, prevTaskCompenent);
+    }
+
+    if (this._taskListContainer.getElement().contains(prevTaskEditComponent.getElement())) {
+      replace(this._taskEditComponenet, prevTaskEditComponent);
+    }
+
+    remove(prevTaskCompenent);
+    remove(prevTaskEditComponent);
+  }
+
+  destroy() {
+    remove(this._taskComponent);
+    remove(this._taskEditComponenet);
   }
 
   _replaceCardToForm() {
