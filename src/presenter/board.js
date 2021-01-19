@@ -22,7 +22,7 @@ export default class Board {
     this._sortComponent = new SortView();
     this._taskListComponent = new TaskListView();
     this._noTaskComponent = new NoTaskView();
-    this._loadMoreButtonComponenet = new LoadMoreButtonView();
+    this._loadMoreButtonComponent = new LoadMoreButtonView();
 
     this._handleTaskChange = this._handleTaskChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -32,7 +32,10 @@ export default class Board {
 
   init(boardTasks) {
     this._boardTasks = boardTasks.slice();
-    this._sourceBoardTasks = boardTasks.slice();
+    // 1. В отличии от сортировки по любому параметру,
+    // исходный порядок можно сохранить только одним способом -
+    // сохранив исходный массив:
+    this._sourcedBoardTasks = boardTasks.slice();
 
     render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
     render(this._boardComponent, this._taskListComponent, RenderPosition.BEFOREEND);
@@ -52,6 +55,9 @@ export default class Board {
   }
 
   _sortTasks(sortType) {
+    // 2. Этот исходный массив задач необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _boardTasks
     switch (sortType) {
       case SortType.DATE_UP:
         this._boardTasks.sort(sortTaskUp);
@@ -60,6 +66,8 @@ export default class Board {
         this._boardTasks.sort(sortTaskDown);
         break;
       default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _boardTasks исходный массив
         this._boardTasks = this._sourcedBoardTasks.slice();
     }
 
@@ -72,6 +80,8 @@ export default class Board {
     }
 
     this._sortTasks(sortType);
+    this._clearTaskList();
+    this._renderTaskList();
   }
 
   _renderSort() {
@@ -100,13 +110,14 @@ export default class Board {
     this._renderedTaskCount += TASK_COUNT_PER_STEP;
 
     if (this._renderedTaskCount >= this._boardTasks.length) {
-      remove(this._loadMoreButtonComponenet);
+      remove(this._loadMoreButtonComponent);
     }
   }
 
   _renderLoadMoreButton() {
-    render(this._boardComponent, this._loadMoreButtonComponenet, RenderPosition.BEFOREEND);
-    this._loadMoreButtonComponenet.setClickHandler(this._handleLoadMoreButtonClick);
+    render(this._boardComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
+
+    this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
   }
 
   _clearTaskList() {
@@ -115,7 +126,7 @@ export default class Board {
       .forEach((presenter) => presenter.destroy());
     this._taskPresenter = {};
     this._renderedTaskCount = TASK_COUNT_PER_STEP;
-    remove(this._loadMoreButtonComponenet);
+    remove(this._loadMoreButtonComponent);
   }
 
   _renderTaskList() {
@@ -133,7 +144,6 @@ export default class Board {
     }
 
     this._renderSort();
-
     this._renderTaskList();
   }
 }

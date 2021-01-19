@@ -14,7 +14,7 @@ export default class Task {
     this._changeMode = changeMode;
 
     this._taskComponent = null;
-    this._taskEditComponenet = null;
+    this._taskEditComponent = null;
     this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
@@ -27,37 +27,37 @@ export default class Task {
   init(task) {
     this._task = task;
 
-    const prevTaskCompenent = this._taskComponent;
-    const prevTaskEditComponent = this._taskEditComponenet;
+    const prevTaskComponent = this._taskComponent;
+    const prevTaskEditComponent = this._taskEditComponent;
 
     this._taskComponent = new TaskView(task);
-    this._taskEditComponenet = new TaskEditView(task);
+    this._taskEditComponent = new TaskEditView(task);
 
-    this._taskComponent.setEditClickHandler(this._handleEditCLick);
-    this._taskComponent.setFavoriteCLickHandler(this._handleFavoriteClick);
+    this._taskComponent.setEditClickHandler(this._handleEditClick);
+    this._taskComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._taskComponent.setArchiveClickHandler(this._handleArchiveClick);
-    this._taskEditComponenet.setFormSubmitHandler(this._handleFormSubmit);
+    this._taskEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
-    if (prevTaskCompenent === null || prevTaskEditComponent === null) {
+    if (prevTaskComponent === null || prevTaskEditComponent === null) {
       render(this._taskListContainer, this._taskComponent, RenderPosition.BEFOREEND);
       return;
     }
 
+    if (this._mode === Mode.DEFAULT) {
+      replace(this._taskComponent, prevTaskComponent);
+    }
+
     if (this._mode === Mode.EDITING) {
-      replace(this._taskComponent, prevTaskCompenent);
+      replace(this._taskEditComponent, prevTaskEditComponent);
     }
 
-    if (this._taskListContainer.getElement().contains(prevTaskEditComponent.getElement())) {
-      replace(this._taskEditComponenet, prevTaskEditComponent);
-    }
-
-    remove(prevTaskCompenent);
+    remove(prevTaskComponent);
     remove(prevTaskEditComponent);
   }
 
   destroy() {
     remove(this._taskComponent);
-    remove(this._taskEditComponenet);
+    remove(this._taskEditComponent);
   }
 
   resetView() {
@@ -67,14 +67,14 @@ export default class Task {
   }
 
   _replaceCardToForm() {
-    replace(this._taskEditComponenet, this._taskComponent);
+    replace(this._taskEditComponent, this._taskComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToCard() {
-    replace(this._taskComponent, this._taskEditComponenet);
+    replace(this._taskComponent, this._taskEditComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
@@ -92,29 +92,30 @@ export default class Task {
 
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
-        this._task,
-        {
-          isFavorite: !this._task.isFavorite
-        }
-      )
+        Object.assign(
+            {},
+            this._task,
+            {
+              isFavorite: !this._task.isFavorite
+            }
+        )
     );
   }
 
   _handleArchiveClick() {
     this._changeData(
-      Object.assign(
-        {},
-        this._task,
-        {
-          isArchive: !this._task.isArchive
-        }
-      )
+        Object.assign(
+            {},
+            this._task,
+            {
+              isArchive: !this._task.isArchive
+            }
+        )
     );
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(task) {
+    this._changeData(task);
     this._replaceFormToCard();
   }
 }
