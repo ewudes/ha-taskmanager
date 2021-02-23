@@ -294,7 +294,7 @@ export default class TaskEdit extends SmartView {
 
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySeelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandler);
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   static parseDataToTask(data) {
