@@ -4,8 +4,8 @@ import {filter} from "../utils/filter.js";
 import {FilterType, UpdateType} from "../const.js";
 
 export default class Filter {
-  constructor(filterContaainer, filterModel, tasksModel) {
-    this._filterContainer = filterContaainer;
+  constructor(filterContainer, filterModel, tasksModel) {
+    this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._tasksModel = tasksModel;
     this._currentFilter = null;
@@ -29,7 +29,7 @@ export default class Filter {
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterComponent, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
       return;
     }
 

@@ -124,7 +124,7 @@ export default class Task {
   }
 
   _handleFormSubmit(update) {
-    // Проверяем, поменялись ли в задче данные, которые попадают под фильтрацию,
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
       !isDatesEqual(this._task.dueDate, update.dueDate) ||
@@ -139,7 +139,7 @@ export default class Task {
   }
 
   _handleDeleteClick(task) {
-    this._changeDate(
+    this._changeData(
         UserAction.DELETE_TASK,
         UpdateType.MINOR,
         task

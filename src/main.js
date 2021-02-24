@@ -3,7 +3,7 @@ import StatisticsView from "./view/statistics.js";
 import {generateTask} from "./mock/task.js";
 import BoardPresenter from "./presenter/board.js";
 import FilterPresenter from "./presenter/filter.js";
-import TaskModel from "./model/tasks.js";
+import TasksModel from "./model/tasks.js";
 import FilterModel from "./model/filter.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
@@ -12,7 +12,7 @@ const TASK_COUNT = 22;
 
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
 
-const tasksModel = new TaskModel();
+const tasksModel = new TasksModel();
 tasksModel.setTasks(tasks);
 
 const filterModel = new FilterModel();
@@ -20,7 +20,6 @@ const filterModel = new FilterModel();
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 const siteMenuComponent = new SiteMenuView();
-
 
 render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
@@ -56,7 +55,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-siteMenuComponent.siteMenuClickHandler(handleSiteMenuClick);
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 boardPresenter.init();

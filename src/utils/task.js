@@ -20,6 +20,8 @@ export const formatTaskDueDate = (dueDate) => {
   return dayjs(dueDate).format(`D MMMM`);
 };
 
+// Функция помещает задачи без даты в конце списка,
+// возвращая нужный вес для колбэка sort
 const getWeightForNullDate = (dateA, dateB) => {
   if (dateA === null && dateB === null) {
     return 0;
@@ -56,6 +58,6 @@ export const sortTaskDown = (taskA, taskB) => {
   return dayjs(taskB.dueDate).diff(dayjs(taskA.dueDate));
 };
 
-export const isDateEqual = (dateA, dateB) => {
+export const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, `D`);
 };

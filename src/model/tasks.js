@@ -15,7 +15,7 @@ export default class Tasks extends Observer {
   }
 
   updateTask(updateType, update) {
-    const index = this._tasks.fingIndex((task) => task.id === update.id);
+    const index = this._tasks.findIndex((task) => task.id === update.id);
 
     if (index === -1) {
       throw new Error(`Can't update unexisting task`);

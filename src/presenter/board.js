@@ -10,6 +10,7 @@ import {sortTaskUp, sortTaskDown} from "../utils/task.js";
 import {filter} from "../utils/filter.js";
 import {SortType, UpdateType, UserAction} from "../const.js";
 
+
 const TASK_COUNT_PER_STEP = 8;
 
 export default class Board {
@@ -72,6 +73,7 @@ export default class Board {
       case SortType.DATE_DOWN:
         return filtredTasks.sort(sortTaskDown);
     }
+
     return filtredTasks;
   }
 
