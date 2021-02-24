@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import he from "he";
 import SmartView from "./smart.js";
 import {COLORS} from "../const.js";
 import {isTaskRepeating, formatTaskDueDate} from "../utils/task.js";
@@ -106,7 +107,7 @@ const createTaskEditTemplate = (data) => {
               class="card__text"
               placeholder="Start typing your text here..."
               name="text"
-            >${description}</textarea>
+            >${he.encode(description)}</textarea>
           </label>
         </div>
         <div class="card__settings">
@@ -139,6 +140,7 @@ export default class TaskEdit extends SmartView {
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._dueDateToggleHandler = this._dueDateToggleHandler.bind(this);
     this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this);
@@ -148,6 +150,17 @@ export default class TaskEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(task) {
@@ -164,21 +177,26 @@ export default class TaskEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepicker() {
     if (this._datepicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
       this._datepicker.destroy();
       this._datepicker = null;
     }
 
     if (this._data.isDueDate) {
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
       this._datepicker = flatpickr(
           this.getElement().querySelector(`.card__date`),
           {
             dateFormat: `j F`,
             defaultDate: this._data.dueDate,
-            onChange: this._dueDateChangeHandler
+            onChange: this._dueDateChangeHandler // На событие flatpickr передаём наш колбэк
           }
       );
     }
@@ -210,6 +228,9 @@ export default class TaskEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       isDueDate: !this._data.isDueDate,
+      // Логика следующая: если выбор даты нужно показать,
+      // то есть когда "!this._data.isDueDate === true",
+      // тогда isRepeating должно быть строго false.
       isRepeating: !this._data.isDueDate ? false : this._data.isRepeating
     });
   }
@@ -218,6 +239,7 @@ export default class TaskEdit extends SmartView {
     evt.preventDefault();
     this.updateData({
       isRepeating: !this._data.isRepeating,
+      // Аналогично, но наоборот, для повторения
       isDueDate: !this._data.isRepeating && false
     });
   }
@@ -230,6 +252,11 @@ export default class TaskEdit extends SmartView {
   }
 
   _dueDateChangeHandler([userDate]) {
+    // По заданию дедлайн у задачи устанавливается без учёта времеми,
+    // но объект даты без времени завести нельзя,
+    // поэтому будем считать срок у всех задач -
+    // это 23:59:59 установленной даты
+
     this.updateData({
       dueDate: dayjs(userDate).hour(23).minute(59).second(59).toDate()
     });
@@ -261,6 +288,16 @@ export default class TaskEdit extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TaskEdit.parseDataToTask(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   static parseTaskToData(task) {
