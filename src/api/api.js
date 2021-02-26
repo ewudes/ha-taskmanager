@@ -35,6 +35,24 @@ export default class Api {
       .then(TasksModel.adaptToClient);
   }
 
+  addTask(task) {
+    return this._load({
+      url: `tasks`,
+      method: Method.POST,
+      body: JSON.stringify(TasksModel.adaptToServer(task)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(TasksModel.adaptToClient);
+  }
+
+  deleteTask(task) {
+    return this._load({
+      url: `tasks/${task.id}`,
+      method: Method.DELETE
+    });
+  }
+
   sync(data) {
     return this._load({
       url: `tasks/sync`,
@@ -44,6 +62,7 @@ export default class Api {
     })
       .then(Api.toJSON);
   }
+
 
   _load({
     url,
